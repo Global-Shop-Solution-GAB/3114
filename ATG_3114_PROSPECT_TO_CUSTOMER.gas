@@ -1,0 +1,30 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+
+V.Local.sProspect.Declare(String)
+V.Local.squery.Declare(String)
+F.Intrinsic.Control.If(V.passed.DATA-MODE,<>,5)
+	F.Intrinsic.Control.end
+F.Intrinsic.Control.EndIf
+V.Local.sProspect.Set(V.passed.DATA-COMPANY-NO)
+F.ODBC.Connection!conx.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+F.intrinsic.string.concat("SELECT ISPROSPECT FROM CUST_SHIPTO_EXT WHERE CUSTOMER = '",V.local.sProspect,"' and SHIP_ID = '' AND ISPROSPECT = 1",V.local.squery)
+F.ODBC.Connection!conx.OpenRecordsetRW("rst",V.Local.squery)
+
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,False)
+	F.ODBC.conx!rst.Set!ISPROSpECT(False)
+	F.ODBC.conx!rst.Update
+F.Intrinsic.Control.endif
+F.ODBC.Conx!rst.close
+F.ODBC.Connection!conx.Close
+F.Intrinsic.Control.End
+
+Program.Sub.Main.End
+
+
